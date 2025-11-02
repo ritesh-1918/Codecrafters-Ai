@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CodeCrafters AI - AI-Powered Coding Education Platform</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/editor/editor.main.css">
+  <style>
+    /* Design System */
+    :root {
+      --color-white: rgba(255, 255, 255, 1);
+      --color-black: rgba(0, 0, 0, 1);
+      --color-cream-50: rgba(252, 252, 249, 1);
+      --color-cream-100: rgba(255, 255, 253, 1);
+      --color-gray-200: rgba(245, 245, 245, 1);
+      --color-gray-300: rgba(167, 169, 169, 1);
+      --color-gray-400: rgba(119, 124, 124, 1);
+      --color-slate-500: rgba(98, 108, 113, 1);
+      --color-brown-600: rgba(94, 82, 64, 1);
+      --color-charcoal-700: rgba(31, 33, 33, 1);
+      --color-charcoal-800: rgba(38, 40, 40, 1);
+      --color-slate-900: rgba(19, 52, 59, 1);
+      --color-teal-300: rgba(50, 184, 198, 1);
+      --color-teal-400: rgba(45, 166, 178, 1);
+      --color-teal-500: rgba(33, 128, 141, 1);
+      --color-teal-600: rgba(29, 116, 128, 1);
+      --color-teal-700: rgba(26, 104, 115, 1);
+      --color-blue-500: rgba(59, 130, 246, 1);
+      --color-blue-600: rgba(37, 99, 235, 1);
+      --color-purple-500: rgba(139, 92, 246, 1);
+      --color-purple-600: rgba(124, 58, 237, 1);
+      --color-green-500: rgba(16, 185, 129, 1);
+      --color-red-400: rgba(255, 84, 89, 1);
+      --color-red-500: rgba(192, 21, 47, 1);
+      
+      --color-background: var(--color-cream-50);
+      --color-surface: var(--color-cream-100);
+      --color-text: var(--color-slate-900);
+      --color-text-secondary: var(--color-slate-500);
+      --color-primary: var(--color-teal-500);
+      --color-primary-hover: var(--color-teal-600);
+      --color-border: rgba(94, 82, 64, 0.2);
+      --color-card-border: rgba(94, 82, 64, 0.12);
+      
+      --font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-size-xs: 11px;
+      --font-size-sm: 12px;
+      --font-size-base: 14px;
+      --font-size-lg: 16px;
+      --font-size-xl: 18px;
+      --font-size-2xl: 20px;
+      --font-size-3xl: 24px;
+      --font-size-4xl: 30px;
+      --font-weight-medium: 500;
+      --font-weight-semibold: 550;
+      --font-weight-bold: 600;
+      
+      --space-8: 8px;
+      --space-12: 12px;
+      --space-16: 16px;
+      --space-20: 20px;
+      --space-24: 24px;
+      --space-32: 32px;
+      
+      --radius-base: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-background: var(--color-charcoal-700);
+        --color-surface: var(--color-charcoal-800);
+        --color-text: var(--color-gray-200);
+        --color-text-secondary: rgba(167, 169, 169, 0.7);
+        --color-primary: var(--color-teal-300);
+        --color-primary-hover: var(--color-teal-400);
+        --color-border: rgba(119, 124, 124, 0.3);
+        --color-card-border: rgba(119, 124, 124, 0.2);
+      }
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-family-base);
+      font-size: var(--font-size-base);
+      color: var(--color-text);
+      background: linear-gradient(135deg, var(--color-blue-500) 0%, var(--color-purple-500) 100%);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* Header */
+    .header {
+      background: var(--color-surface);
+      border-bottom: 1px solid var(--color-card-border);
+      padding: var(--space-16) var(--space-32);
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: var(--space-12);
+    }
+
+    .logo-icon {
+      font-size: var(--font-size-3xl);
+    }
+
+    .logo-text h1 {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-text);
+    }
+
+    .logo-text p {
+      font-size: var(--font-size-sm);
+      color: var(--color-text-secondary);
+    }
+
+    .header-stats {
+      display: flex;
+      gap: var(--space-24);
+      align-items: center;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-primary);
+    }
+
+    .stat-label {
+      font-size: var(--font-size-xs);
+      color: var(--color-text-secondary);
+      text-transform: uppercase;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1400px;
+      margin: var(--space-32) auto;
+      padding: 0 var(--space-32);
+      display: flex;
+      gap: var(--space-24);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      flex-shrink: 0;
+    }
+
+    .nav-menu {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      padding: var(--space-16);
+      box-shadow: var(--shadow-md);
+      position: sticky;
+      top: 100px;
+    }
+
+    .nav-item {
+      padding: var(--space-12) var(--space-16);
+      margin-bottom: var(--space-8);
+      border-radius: var(--radius-base);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: var(--space-12);
+      font-weight: var(--font-weight-medium);
+    }
+
+    .nav-item:hover {
+      background: rgba(33, 128, 141, 0.1);
+    }
+
+    .nav-item.active {
+      background: var(--color-primary);
+      color: var(--color-white);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .section-header {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      margin-bottom: var(--space-24);
+      box-shadow: var(--shadow-md);
+    }
+
+    .section-header h2 {
+      font-size: var(--font-size-3xl);
+      font-weight: var(--font-weight-bold);
+      margin-bottom: var(--space-8);
+    }
+
+    .section-header p {
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-base);
+    }
+
+    /* Card */
+    .card {
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      box-shadow: var(--shadow-md);
+      margin-bottom: var(--space-24);
+      border: 1px solid var(--color-card-border);
+    }
+
+    .card-header {
+      margin-bottom: var(--space-16);
+    }
+
+    .card-title {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-semibold);
+      margin-bottom: var(--space-8);
+    }
+
+    /* Form Controls */
+    .form-group {
+      margin-bottom: var(--space-16);
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: var(--space-8);
+      font-weight: var(--font-weight-medium);
+      font-size: var(--font-size-sm);
+    }
+
+    select, input {
+      width: 100%;
+      padding: var(--space-12);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-base);
+      font-size: var(--font-size-base);
+      background: var(--color-surface);
+      color: var(--color-text);
+      transition: all 0.2s;
+    }
+
+    select:focus, input:focus {
+      outline: 2px solid var(--color-primary);
+      border-color: var(--color-primary);
+    }
+
+    /* Buttons */
+    .btn {
+      padding: var(--space-12) var(--space-24);
+      border: none;
+      border-radius: var(--radius-base);
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-medium);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-8);
+    }
+
+    .btn-primary {
+      background: var(--color-primary);
+      color: var(--color-white);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--color-primary-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-secondary {
+      background: var(--color-blue-500);
+      color: var(--color-white);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--color-blue-600);
+    }
+
+    .btn-success {
+      background: var(--color-green-500);
+      color: var(--color-white);
+    }
+
+    .btn-danger {
+      background: var(--color-red-500);
+      color: var(--color-white);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: var(--space-12);
+      flex-wrap: wrap;
+    }
+
+    /* Challenge Cards */
+    .challenges-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-20);
+      margin-top: var(--space-20);
+    }
+
+    .challenge-card {
+      background: var(--color-surface);
+      border: 2px solid var(--color-card-border);
+      border-left: 4px solid var(--color-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .challenge-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-left-color: var(--color-blue-500);
+    }
+
+    .challenge-title {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+      margin-bottom: var(--space-12);
+      color: var(--color-text);
+    }
+
+    .challenge-description {
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-sm);
+      margin-bottom: var(--space-16);
+      line-height: 1.5;
+    }
+
+    .challenge-meta {
+      display: flex;
+      gap: var(--space-12);
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 4px var(--space-12);
+      border-radius: 20px;
+      font-size: var(--font-size-xs);
+      font-weight: var(--font-weight-medium);
+      text-transform: uppercase;
+    }
+
+    .badge-beginner {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--color-green-500);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge-intermediate {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--color-blue-500);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .badge-advanced {
+      background: rgba(192, 21, 47, 0.15);
+      color: var(--color-red-500);
+      border: 1px solid rgba(192, 21, 47, 0.3);
+    }
+
+    .badge-language {
+      background: rgba(139, 92, 246, 0.15);
+      color: var(--color-purple-500);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+    }
+
+    /* Code Editor */
+    .editor-container {
+      border: 1px solid var(--color-card-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: var(--space-20);
+    }
+
+    .editor-header {
+      background: var(--color-surface);
+      padding: var(--space-12) var(--space-16);
+      border-bottom: 1px solid var(--color-card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .editor-tabs {
+      display: flex;
+      gap: var(--space-8);
+    }
+
+    .editor-tab {
+      padding: 6px var(--space-12);
+      border-radius: var(--radius-base);
+      font-size: var(--font-size-sm);
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      color: var(--color-text-secondary);
+    }
+
+    .editor-tab.active {
+      background: var(--color-primary);
+      color: var(--color-white);
+    }
+
+    #editor {
+      height: 400px;
+      width: 100%;
+    }
+
+    /* AI Response */
+    .ai-response {
+      background: linear-gradient(135deg, rgba(33, 128, 141, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+      border: 2px solid var(--color-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--space-20);
+      margin-top: var(--space-20);
+    }
+
+    .ai-response-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-12);
+      margin-bottom: var(--space-16);
+    }
+
+    .ai-response-icon {
+      font-size: var(--font-size-2xl);
+    }
+
+    .ai-response-title {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+    }
+
+    .ai-response-content {
+      line-height: 1.7;
+      color: var(--color-text);
+    }
+
+    .ai-response pre {
+      background: var(--color-surface);
+      padding: var(--space-16);
+      border-radius: var(--radius-base);
+      overflow-x: auto;
+      margin: var(--space-12) 0;
+      border: 1px solid var(--color-card-border);
+    }
+
+    /* Voice Interface */
+    .voice-interface {
+      text-align: center;
+      padding: var(--space-32);
+    }
+
+    .voice-button {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--color-red-500);
+      color: var(--color-white);
+      border: none;
+      font-size: 48px;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: var(--shadow-lg);
+      margin-bottom: var(--space-20);
+    }
+
+    .voice-button:hover {
+      transform: scale(1.05);
+    }
+
+    .voice-button.recording {
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .voice-status {
+      font-size: var(--font-size-lg);
+      color: var(--color-text-secondary);
+      margin-bottom: var(--space-16);
+    }
+
+    /* Progress Dashboard */
+    .progress-grid {
+      display: grid;
+      gap: var(--space-20);
+    }
+
+    .skill-item {
+      background: var(--color-surface);
+      padding: var(--space-16);
+      border-radius: var(--radius-base);
+      border: 1px solid var(--color-card-border);
+    }
+
+    .skill-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-12);
+    }
+
+    .skill-name {
+      font-weight: var(--font-weight-semibold);
+    }
+
+    .skill-percentage {
+      font-weight: var(--font-weight-bold);
+      color: var(--color-primary);
+    }
+
+    .progress-bar-container {
+      height: 8px;
+      background: rgba(33, 128, 141, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-blue-500) 100%);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    /* Project Templates */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: var(--space-20);
+    }
+
+    .project-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-card-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-24);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .project-header {
+      margin-bottom: var(--space-16);
+    }
+
+    .project-title {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-semibold);
+      margin-bottom: var(--space-8);
+    }
+
+    .tech-stack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-8);
+      margin-bottom: var(--space-16);
+    }
+
+    .tech-badge {
+      padding: 4px var(--space-12);
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 20px;
+      font-size: var(--font-size-xs);
+      color: var(--color-blue-500);
+    }
+
+    .project-meta {
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-sm);
+    }
+
+    /* Loading */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--color-white);
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: var(--space-32);
+      color: var(--color-text-secondary);
+    }
+
+    .empty-state-icon {
+      font-size: 64px;
+      margin-bottom: var(--space-16);
+      opacity: 0.5;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        padding: 0 var(--space-16);
+      }
+
+      .sidebar {
+        width: 100%;
+      }
+
+      .nav-menu {
+        position: static;
+      }
+
+      .header-stats {
+        display: none;
+      }
+
+      .challenges-grid,
+      .project-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Highlight */
+    .highlight {
+      background: rgba(255, 193, 7, 0.2);
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <div class="logo-icon">🎯</div>
+        <div class="logo-text">
+          <h1>CodeCrafters AI</h1>
+          <p>AI-Powered Coding Education Platform</p>
+        </div>
+      </div>
+      <div class="header-stats">
+        <div class="stat-item">
+          <div class="stat-value" id="challenges-completed">0</div>
+          <div class="stat-label">Challenges</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="skill-level">Beginner</div>
+          <div class="stat-label">Level</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="industry-ready">28%</div>
+          <div class="stat-label">Ready</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <nav class="nav-menu">
+        <div class="nav-item active" data-section="challenges">
+          <span>🎲</span> Challenge Generator
+        </div>
+        <div class="nav-item" data-section="editor">
+          <span>💻</span> Code Editor
+        </div>
+        <div class="nav-item" data-section="voice">
+          <span>🎤</span> Voice Queries
+        </div>
+        <div class="nav-item" data-section="progress">
+          <span>📊</span> Progress Dashboard
+        </div>
+        <div class="nav-item" data-section="projects">
+          <span>🚀</span> Project Templates
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Challenge Generator Section -->
+      <section id="challenges" class="section active">
+        <div class="section-header">
+          <h2>🎲 AI-Powered Challenge Generator</h2>
+          <p>Get personalized coding challenges tailored to your branch, year, and skill level. Challenges adapt to your performance!</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Generate Your Challenges</h3>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Select Your Branch</label>
+            <select id="branch-select">
+              <option value="CSE">Computer Science &amp; Engineering (CSE)</option>
+              <option value="IT">Information Technology (IT)</option>
+              <option value="ECE">Electronics &amp; Communication (ECE)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Select Your Year</label>
+            <select id="year-select">
+              <option value="1st">1st Year</option>
+              <option value="2nd">2nd Year</option>
+              <option value="3rd">3rd Year</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Skill Level</label>
+            <select id="skill-select">
+              <option value="beginner">Beginner - Just starting out</option>
+              <option value="intermediate">Intermediate - Know the basics</option>
+              <option value="advanced">Advanced - Ready for complex problems</option>
+            </select>
+          </div>
+
+          <button class="btn btn-primary" id="generate-btn">
+            <span>✨</span> Generate Challenges
+          </button>
+        </div>
+
+        <div id="challenges-container" class="challenges-grid" style="display: none;"></div>
+
+        <div id="challenges-empty" class="empty-state">
+          <div class="empty-state-icon">🎯</div>
+          <p>Click "Generate Challenges" to get started with personalized coding exercises!</p>
+        </div>
+      </section>
+
+      <!-- Code Editor Section -->
+      <section id="editor" class="section">
+        <div class="section-header">
+          <h2>💻 Interactive Code Editor</h2>
+          <p>Write code with syntax highlighting, auto-completion, and get instant AI feedback on your solutions!</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Current Challenge: <span id="current-challenge">Select a challenge first</span></h3>
+          </div>
+
+          <div class="editor-container">
+            <div class="editor-header">
+              <div class="editor-tabs">
+                <button class="editor-tab active" data-language="python">Python</button>
+                <button class="editor-tab" data-language="javascript">JavaScript</button>
+                <button class="editor-tab" data-language="java">Java</button>
+                <button class="editor-tab" data-language="cpp">C++</button>
+              </div>
+              <div>
+                <button class="btn btn-secondary" id="run-btn">
+                  <span>▶️</span> Run Code
+                </button>
+                <button class="btn btn-success" id="submit-btn">
+                  <span>✅</span> Submit for AI Review
+                </button>
+              </div>
+            </div>
+            <div id="editor"></div>
+          </div>
+        </div>
+
+        <div id="ai-feedback" style="display: none;"></div>
+      </section>
+
+      <!-- Voice Query Section -->
+      <section id="voice" class="section">
+        <div class="section-header">
+          <h2>🎤 Voice Query Assistant</h2>
+          <p>Ask coding questions using your voice! Our AI mentor will transcribe and answer instantly.</p>
+        </div>
+
+        <div class="card">
+          <div class="voice-interface">
+            <button class="voice-button" id="voice-btn">🎤</button>
+            <div class="voice-status" id="voice-status">Click the microphone to ask a question</div>
+            <div class="btn-group" style="justify-content: center;">
+              <button class="btn btn-primary" id="voice-stop-btn" style="display: none;">
+                <span>⏹️</span> Stop Recording
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="voice-response" style="display: none;"></div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">💡 Example Questions You Can Ask</h3>
+          </div>
+          <div style="display: grid; gap: 12px;">
+            <div class="challenge-card" style="cursor: default; transform: none;">
+              <p><strong>"How do I loop through a list in Python?"</strong></p>
+            </div>
+            <div class="challenge-card" style="cursor: default; transform: none;">
+              <p><strong>"What is the difference between == and === in JavaScript?"</strong></p>
+            </div>
+            <div class="challenge-card" style="cursor: default; transform: none;">
+              <p><strong>"Explain recursion with an example"</strong></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Progress Dashboard Section -->
+      <section id="progress" class="section">
+        <div class="section-header">
+          <h2>📊 Your Learning Progress</h2>
+          <p>Track your skills mastery and get personalized recommendations for your career path!</p>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Skills Mastered</h3>
+          </div>
+          <div class="progress-grid" id="skills-container"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">🎯 Career Roadmap Recommendation</h3>
+          </div>
+          <div class="ai-response">
+            <div class="ai-response-header">
+              <span class="ai-response-icon">🤖</span>
+              <h4 class="ai-response-title">AI Career Coach</h4>
+            </div>
+            <div class="ai-response-content">
+              <p><strong>Recommended Path: Full-Stack Web Developer</strong></p>
+              <p>Based on your current skills, you're on track to become a full-stack developer! Here's your personalized 6-month roadmap:</p>
+              
+              <p><strong>Month 1-2: Master Backend Development</strong></p>
+              <ul>
+                <li>Complete Node.js &amp; Express.js challenges</li>
+                <li>Build a REST API project</li>
+                <li>Learn MongoDB database concepts</li>
+              </ul>
+
+              <p><strong>Month 3-4: Frontend Frameworks</strong></p>
+              <ul>
+                <li>React.js fundamentals &amp; components</li>
+                <li>State management and hooks</li>
+                <li>Build 2-3 interactive web apps</li>
+              </ul>
+
+              <p><strong>Month 5-6: Full-Stack Integration</strong></p>
+              <ul>
+                <li>Connect frontend with backend APIs</li>
+                <li>Deploy projects on cloud platforms</li>
+                <li>Build portfolio showcase website</li>
+              </ul>
+
+              <p><strong>Estimated Job-Readiness: 85% after 6 months</strong></p>
+              <p>🎓 <strong>Next Action:</strong> Complete the "Student Grade Management System" challenge to boost your backend skills!</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Project Templates Section -->
+      <section id="projects" class="section">
+        <div class="section-header">
+          <h2>🚀 AI-Generated Project Templates</h2>
+          <p>Get complete project specifications, starter code, and step-by-step guides to build your portfolio!</p>
+        </div>
+
+        <div class="project-grid" id="projects-container"></div>
+
+        <div id="project-details" style="display: none;"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
+  <script>
+    // Application State
+    const state = {
+      currentChallenge: null,
+      currentLanguage: 'python',
+      challengesCompleted: 0,
+      skillLevel: 'Beginner',
+      industryReady: 28,
+      isRecording: false,
+      editor: null
+    };
+
+    // Mock Data
+    const mockChallenges = {
+      beginner: [
+        {
+          title: "Hello World Printer",
+          description: "Write a program that prints 'Hello, World!' to the console. This is your first step in programming!",
+          difficulty: "beginner",
+          language: "Python",
+          expectedInput: "None",
+          expectedOutput: "Hello, World!",
+          hint: "Use the print() function in Python",
+          starterCode: {
+            python: "# Write your code here\nprint('Hello, World!')",
+            javascript: "// Write your code here\nconsole.log('Hello, World!');",
+            java: "public class Main {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, World!\");\n    }\n}",
+            cpp: "#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << \"Hello, World!\" << endl;\n    return 0;\n}"
+          }
+        },
+        {
+          title: "Sum Calculator",
+          description: "Create a function that takes two numbers and returns their sum. Learn about functions and parameters!",
+          difficulty: "beginner",
+          language: "Python",
+          expectedInput: "a = 5, b = 3",
+          expectedOutput: "8",
+          hint: "Define a function with two parameters and use the + operator",
+          starterCode: {
+            python: "def add_numbers(a, b):\n    # Write your code here\n    return a + b\n\n# Test your function\nprint(add_numbers(5, 3))",
+            javascript: "function addNumbers(a, b) {\n    // Write your code here\n    return a + b;\n}\n\n// Test your function\nconsole.log(addNumbers(5, 3));",
+            java: "public class Main {\n    public static int addNumbers(int a, int b) {\n        // Write your code here\n        return a + b;\n    }\n    \n    public static void main(String[] args) {\n        System.out.println(addNumbers(5, 3));\n    }\n}",
+            cpp: "#include <iostream>\nusing namespace std;\n\nint addNumbers(int a, int b) {\n    // Write your code here\n    return a + b;\n}\n\nint main() {\n    cout << addNumbers(5, 3) << endl;\n    return 0;\n}"
+          }
+        },
+        {
+          title: "Even or Odd Checker",
+          description: "Write a program that checks if a number is even or odd. Master conditional statements!",
+          difficulty: "beginner",
+          language: "Python",
+          expectedInput: "number = 7",
+          expectedOutput: "Odd",
+          hint: "Use the modulo operator (%) to check if a number divides by 2",
+          starterCode: {
+            python: "def check_even_odd(number):\n    # Write your code here\n    if number % 2 == 0:\n        return 'Even'\n    else:\n        return 'Odd'\n\nprint(check_even_odd(7))",
+            javascript: "function checkEvenOdd(number) {\n    // Write your code here\n    if (number % 2 === 0) {\n        return 'Even';\n    } else {\n        return 'Odd';\n    }\n}\n\nconsole.log(checkEvenOdd(7));",
+            java: "public class Main {\n    public static String checkEvenOdd(int number) {\n        if (number % 2 == 0) {\n            return \"Even\";\n        } else {\n            return \"Odd\";\n        }\n    }\n    \n    public static void main(String[] args) {\n        System.out.println(checkEvenOdd(7));\n    }\n}",
+            cpp: "#include <iostream>\nusing namespace std;\n\nstring checkEvenOdd(int number) {\n    if (number % 2 == 0) {\n        return \"Even\";\n    } else {\n        return \"Odd\";\n    }\n}\n\nint main() {\n    cout << checkEvenOdd(7) << endl;\n    return 0;\n}"
+          }
+        }
+      ],
+      intermediate: [
+        {
+          title: "Fibonacci Sequence Generator",
+          description: "Write a function that generates the first N Fibonacci numbers. Master loops and sequences!",
+          difficulty: "intermediate",
+          language: "Python",
+          expectedInput: "N = 7",
+          expectedOutput: "[1, 1, 2, 3, 5, 8, 13]",
+          hint: "Use a loop to track the last two numbers",
+          starterCode: {
+            python: "def fibonacci(n):\n    # Write your code here\n    fib = [1, 1]\n    for i in range(2, n):\n        fib.append(fib[i-1] + fib[i-2])\n    return fib[:n]\n\nprint(fibonacci(7))",
+            javascript: "function fibonacci(n) {\n    // Write your code here\n    let fib = [1, 1];\n    for (let i = 2; i < n; i++) {\n        fib.push(fib[i-1] + fib[i-2]);\n    }\n    return fib.slice(0, n);\n}\n\nconsole.log(fibonacci(7));",
+            java: "import java.util.*;\n\npublic class Main {\n    public static List<Integer> fibonacci(int n) {\n        List<Integer> fib = new ArrayList<>();\n        fib.add(1);\n        fib.add(1);\n        for (int i = 2; i < n; i++) {\n            fib.add(fib.get(i-1) + fib.get(i-2));\n        }\n        return fib.subList(0, n);\n    }\n    \n    public static void main(String[] args) {\n        System.out.println(fibonacci(7));\n    }\n}",
+            cpp: "#include <iostream>\n#include <vector>\nusing namespace std;\n\nvector<int> fibonacci(int n) {\n    vector<int> fib = {1, 1};\n    for (int i = 2; i < n; i++) {\n        fib.push_back(fib[i-1] + fib[i-2]);\n    }\n    return vector<int>(fib.begin(), fib.begin() + n);\n}\n\nint main() {\n    vector<int> result = fibonacci(7);\n    for (int num : result) {\n        cout << num << \" \";\n    }\n    return 0;\n}"
+          }
+        },
+        {
+          title: "Student Grade Calculator",
+          description: "Create a program that calculates final grades based on marks. Learn about arrays and conditionals!",
+          difficulty: "intermediate",
+          language: "Python",
+          expectedInput: "Marks: [85, 90, 78, 92, 88]",
+          expectedOutput: "Final Grade: A",
+          hint: "Calculate average and use conditional statements for grade ranges",
+          starterCode: {
+            python: "def calculate_grade(marks):\n    # Write your code here\n    average = sum(marks) / len(marks)\n    if average >= 90:\n        return 'A'\n    elif average >= 80:\n        return 'B'\n    elif average >= 70:\n        return 'C'\n    else:\n        return 'D'\n\nmarks = [85, 90, 78, 92, 88]\nprint('Final Grade:', calculate_grade(marks))",
+            javascript: "function calculateGrade(marks) {\n    // Write your code here\n    const average = marks.reduce((a, b) => a + b) / marks.length;\n    if (average >= 90) return 'A';\n    else if (average >= 80) return 'B';\n    else if (average >= 70) return 'C';\n    else return 'D';\n}\n\nconst marks = [85, 90, 78, 92, 88];\nconsole.log('Final Grade:', calculateGrade(marks));",
+            java: "public class Main {\n    public static char calculateGrade(int[] marks) {\n        int sum = 0;\n        for (int mark : marks) sum += mark;\n        double average = (double) sum / marks.length;\n        \n        if (average >= 90) return 'A';\n        else if (average >= 80) return 'B';\n        else if (average >= 70) return 'C';\n        else return 'D';\n    }\n    \n    public static void main(String[] args) {\n        int[] marks = {85, 90, 78, 92, 88};\n        System.out.println(\"Final Grade: \" + calculateGrade(marks));\n    }\n}",
+            cpp: "#include <iostream>\n#include <numeric>\nusing namespace std;\n\nchar calculateGrade(int marks[], int size) {\n    double average = accumulate(marks, marks + size, 0.0) / size;\n    if (average >= 90) return 'A';\n    else if (average >= 80) return 'B';\n    else if (average >= 70) return 'C';\n    else return 'D';\n}\n\nint main() {\n    int marks[] = {85, 90, 78, 92, 88};\n    cout << \"Final Grade: \" << calculateGrade(marks, 5) << endl;\n    return 0;\n}"
+          }
+        },
+        {
+          title: "Palindrome Checker",
+          description: "Write a function that checks if a string is a palindrome. Master string manipulation!",
+          difficulty: "intermediate",
+          language: "Python",
+          expectedInput: "'racecar'",
+          expectedOutput: "True",
+          hint: "Compare the string with its reverse",
+          starterCode: {
+            python: "def is_palindrome(text):\n    # Write your code here\n    text = text.lower().replace(' ', '')\n    return text == text[::-1]\n\nprint(is_palindrome('racecar'))",
+            javascript: "function isPalindrome(text) {\n    // Write your code here\n    text = text.toLowerCase().replace(/\\s/g, '');\n    return text === text.split('').reverse().join('');\n}\n\nconsole.log(isPalindrome('racecar'));",
+            java: "public class Main {\n    public static boolean isPalindrome(String text) {\n        text = text.toLowerCase().replaceAll(\"\\\\s\", \"\");\n        String reversed = new StringBuilder(text).reverse().toString();\n        return text.equals(reversed);\n    }\n    \n    public static void main(String[] args) {\n        System.out.println(isPalindrome(\"racecar\"));\n    }\n}",
+            cpp: "#include <iostream>\n#include <algorithm>\nusing namespace std;\n\nbool isPalindrome(string text) {\n    transform(text.begin(), text.end(), text.begin(), ::tolower);\n    string reversed = text;\n    reverse(reversed.begin(), reversed.end());\n    return text == reversed;\n}\n\nint main() {\n    cout << boolalpha << isPalindrome(\"racecar\") << endl;\n    return 0;\n}"
+          }
+        }
+      ],
+      advanced: [
+        {
+          title: "Simple Todo List Manager",
+          description: "Build a basic todo list with add/remove functionality. Learn about data structures and CRUD operations!",
+          difficulty: "advanced",
+          language: "JavaScript",
+          expectedInput: "Commands: add, remove, list",
+          expectedOutput: "Interactive todo management",
+          hint: "Use arrays and functions to manage tasks",
+          starterCode: {
+            javascript: "class TodoList {\n    constructor() {\n        this.tasks = [];\n    }\n    \n    add(task) {\n        this.tasks.push({ id: Date.now(), text: task, completed: false });\n    }\n    \n    remove(id) {\n        this.tasks = this.tasks.filter(t => t.id !== id);\n    }\n    \n    list() {\n        return this.tasks;\n    }\n}\n\nconst todo = new TodoList();\ntodo.add('Learn JavaScript');\ntodo.add('Build projects');\nconsole.log(todo.list());",
+            python: "class TodoList:\n    def __init__(self):\n        self.tasks = []\n    \n    def add(self, task):\n        self.tasks.append({'id': len(self.tasks), 'text': task, 'completed': False})\n    \n    def remove(self, task_id):\n        self.tasks = [t for t in self.tasks if t['id'] != task_id]\n    \n    def list_tasks(self):\n        return self.tasks\n\ntodo = TodoList()\ntodo.add('Learn Python')\ntodo.add('Build projects')\nprint(todo.list_tasks())",
+            java: "import java.util.*;\n\nclass Task {\n    int id;\n    String text;\n    boolean completed;\n    \n    Task(int id, String text) {\n        this.id = id;\n        this.text = text;\n        this.completed = false;\n    }\n}\n\nclass TodoList {\n    private List<Task> tasks = new ArrayList<>();\n    private int nextId = 0;\n    \n    public void add(String text) {\n        tasks.add(new Task(nextId++, text));\n    }\n    \n    public void remove(int id) {\n        tasks.removeIf(t -> t.id == id);\n    }\n    \n    public List<Task> list() {\n        return tasks;\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        TodoList todo = new TodoList();\n        todo.add(\"Learn Java\");\n        todo.add(\"Build projects\");\n        System.out.println(todo.list());\n    }\n}",
+            cpp: "#include <iostream>\n#include <vector>\n#include <string>\nusing namespace std;\n\nstruct Task {\n    int id;\n    string text;\n    bool completed;\n};\n\nclass TodoList {\nprivate:\n    vector<Task> tasks;\n    int nextId = 0;\n    \npublic:\n    void add(string text) {\n        tasks.push_back({nextId++, text, false});\n    }\n    \n    void remove(int id) {\n        tasks.erase(remove_if(tasks.begin(), tasks.end(),\n            [id](Task& t) { return t.id == id; }), tasks.end());\n    }\n    \n    vector<Task> list() {\n        return tasks;\n    }\n};\n\nint main() {\n    TodoList todo;\n    todo.add(\"Learn C++\");\n    todo.add(\"Build projects\");\n    return 0;\n}"
+          }
+        },
+        {
+          title: "Binary Search Implementation",
+          description: "Implement the binary search algorithm to find elements in a sorted array efficiently!",
+          difficulty: "advanced",
+          language: "Python",
+          expectedInput: "arr = [1, 3, 5, 7, 9], target = 5",
+          expectedOutput: "Index: 2",
+          hint: "Divide and conquer - compare with middle element",
+          starterCode: {
+            python: "def binary_search(arr, target):\n    # Write your code here\n    left, right = 0, len(arr) - 1\n    \n    while left <= right:\n        mid = (left + right) // 2\n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n    \n    return -1\n\narr = [1, 3, 5, 7, 9]\nprint('Index:', binary_search(arr, 5))",
+            javascript: "function binarySearch(arr, target) {\n    // Write your code here\n    let left = 0, right = arr.length - 1;\n    \n    while (left <= right) {\n        const mid = Math.floor((left + right) / 2);\n        if (arr[mid] === target) return mid;\n        else if (arr[mid] < target) left = mid + 1;\n        else right = mid - 1;\n    }\n    \n    return -1;\n}\n\nconst arr = [1, 3, 5, 7, 9];\nconsole.log('Index:', binarySearch(arr, 5));",
+            java: "public class Main {\n    public static int binarySearch(int[] arr, int target) {\n        int left = 0, right = arr.length - 1;\n        \n        while (left <= right) {\n            int mid = (left + right) / 2;\n            if (arr[mid] == target) return mid;\n            else if (arr[mid] < target) left = mid + 1;\n            else right = mid - 1;\n        }\n        \n        return -1;\n    }\n    \n    public static void main(String[] args) {\n        int[] arr = {1, 3, 5, 7, 9};\n        System.out.println(\"Index: \" + binarySearch(arr, 5));\n    }\n}",
+            cpp: "#include <iostream>\nusing namespace std;\n\nint binarySearch(int arr[], int size, int target) {\n    int left = 0, right = size - 1;\n    \n    while (left <= right) {\n        int mid = (left + right) / 2;\n        if (arr[mid] == target) return mid;\n        else if (arr[mid] < target) left = mid + 1;\n        else right = mid - 1;\n    }\n    \n    return -1;\n}\n\nint main() {\n    int arr[] = {1, 3, 5, 7, 9};\n    cout << \"Index: \" << binarySearch(arr, 5, 5) << endl;\n    return 0;\n}"
+          }
+        },
+        {
+          title: "REST API Response Parser",
+          description: "Parse JSON data from an API response and extract specific information. Learn about data processing!",
+          difficulty: "advanced",
+          language: "JavaScript",
+          expectedInput: "JSON API response",
+          expectedOutput: "Formatted user data",
+          hint: "Use JSON.parse() and object destructuring",
+          starterCode: {
+            javascript: "function parseUserData(jsonResponse) {\n    // Write your code here\n    const data = JSON.parse(jsonResponse);\n    return {\n        name: data.user.name,\n        email: data.user.email,\n        projects: data.user.projects.length\n    };\n}\n\nconst response = '{\"user\": {\"name\": \"Ritesh\", \"email\": \"ritesh@example.com\", \"projects\": [\"App1\", \"App2\"]}}';\nconsole.log(parseUserData(response));",
+            python: "import json\n\ndef parse_user_data(json_response):\n    # Write your code here\n    data = json.loads(json_response)\n    return {\n        'name': data['user']['name'],\n        'email': data['user']['email'],\n        'projects': len(data['user']['projects'])\n    }\n\nresponse = '{\"user\": {\"name\": \"Ritesh\", \"email\": \"ritesh@example.com\", \"projects\": [\"App1\", \"App2\"]}}'\nprint(parse_user_data(response))",
+            java: "import org.json.*;\n\npublic class Main {\n    public static JSONObject parseUserData(String jsonResponse) {\n        JSONObject data = new JSONObject(jsonResponse);\n        JSONObject user = data.getJSONObject(\"user\");\n        \n        JSONObject result = new JSONObject();\n        result.put(\"name\", user.getString(\"name\"));\n        result.put(\"email\", user.getString(\"email\"));\n        result.put(\"projects\", user.getJSONArray(\"projects\").length());\n        \n        return result;\n    }\n    \n    public static void main(String[] args) {\n        String response = \"{\\\"user\\\": {\\\"name\\\": \\\"Ritesh\\\", \\\"email\\\": \\\"ritesh@example.com\\\", \\\"projects\\\": [\\\"App1\\\", \\\"App2\\\"]}}\";\n        System.out.println(parseUserData(response));\n    }\n}",
+            cpp: "#include <iostream>\n#include <string>\nusing namespace std;\n\n// Note: C++ doesn't have built-in JSON parsing\n// In real projects, use libraries like nlohmann/json\n\nint main() {\n    cout << \"C++ requires external JSON libraries\" << endl;\n    cout << \"Recommended: nlohmann/json or RapidJSON\" << endl;\n    return 0;\n}"
+          }
+        }
+      ]
+    };
+
+    const mockSkills = [
+      { name: "Python Basics", progress: 80 },
+      { name: "JavaScript", progress: 60 },
+      { name: "HTML/CSS", progress: 70 },
+      { name: "Git Version Control", progress: 40 },
+      { name: "Database Concepts", progress: 30 },
+      { name: "Problem Solving", progress: 55 },
+      { name: "Web Development", progress: 50 }
+    ];
+
+    const mockProjects = [
+      {
+        name: "Chat Application",
+        techStack: ["HTML", "CSS", "JavaScript", "Node.js", "Socket.io"],
+        difficulty: "Intermediate",
+        timeEstimate: "6-8 hours",
+        description: "Build a real-time chat application with user authentication and message history."
+      },
+      {
+        name: "E-commerce Website",
+        techStack: ["React", "Node.js", "MongoDB", "Express", "Stripe"],
+        difficulty: "Advanced",
+        timeEstimate: "15-20 hours",
+        description: "Create a full-featured e-commerce platform with product listings, cart, and payment integration."
+      },
+      {
+        name: "Personal Portfolio",
+        techStack: ["HTML", "CSS", "JavaScript"],
+        difficulty: "Beginner",
+        timeEstimate: "3-4 hours",
+        description: "Design and build a professional portfolio website to showcase your projects and skills."
+      },
+      {
+        name: "Task Management System",
+        techStack: ["Vue.js", "Firebase", "Tailwind CSS"],
+        difficulty: "Intermediate",
+        timeEstimate: "8-10 hours",
+        description: "Develop a task management app with drag-and-drop functionality and real-time updates."
+      },
+      {
+        name: "Weather Dashboard",
+        techStack: ["React", "Weather API", "Chart.js"],
+        difficulty: "Beginner",
+        timeEstimate: "4-5 hours",
+        description: "Create a weather dashboard that displays current conditions and forecasts with visualizations."
+      },
+      {
+        name: "Blog Platform",
+        techStack: ["Next.js", "PostgreSQL", "Prisma", "TailwindCSS"],
+        difficulty: "Advanced",
+        timeEstimate: "12-15 hours",
+        description: "Build a full-stack blog platform with markdown support, comments, and SEO optimization."
+      }
+    ];
+
+    const mockVoiceResponses = [
+      {
+        question: "How do I loop through a list in Python?",
+        answer: "Great question! In Python, you can loop through a list using 'for item in list_name:' for direct iteration, or 'for i in range(len(list_name)):' if you need the index. The first method is more Pythonic and readable for most cases. For example: <pre>fruits = ['apple', 'banana', 'orange']\nfor fruit in fruits:\n    print(fruit)</pre> This will print each fruit on a new line. You're mastering loops - keep it up!"
+      },
+      {
+        question: "What is the difference between == and === in JavaScript?",
+        answer: "Excellent question! In JavaScript, '==' checks for value equality with type coercion (converts types if needed), while '===' checks for strict equality (both value AND type must match). Example: <pre>5 == '5'   // true (string converted to number)\n5 === '5'  // false (different types)</pre> Best practice: Always use '===' to avoid unexpected bugs! You're thinking like a pro developer!"
+      },
+      {
+        question: "Explain recursion with an example",
+        answer: "Recursion is when a function calls itself to solve a problem by breaking it into smaller sub-problems. Classic example - factorial: <pre>def factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n-1)\n\nfactorial(5)  # Returns 120</pre> Key parts: 1) Base case (stops recursion), 2) Recursive call (function calls itself). Think of it like Russian dolls - each contains a smaller version! You're grasping advanced concepts - amazing progress!"
+      }
+    ];
+
+    // Initialize Monaco Editor
+    require.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs' } });
+    require(['vs/editor/editor.main'], function() {
+      state.editor = monaco.editor.create(document.getElementById('editor'), {
+        value: "# Select a challenge and language to get started!\n# Your code will appear here with syntax highlighting\n\ndef hello_world():\n    print('Welcome to CodeCrafters AI!')\n\nhello_world()",
+        language: 'python',
+        theme: 'vs-light',
+        automaticLayout: true,
+        fontSize: 14,
+        minimap: { enabled: false },
+        lineNumbers: 'on',
+        scrollBeyondLastLine: false,
+        wordWrap: 'on'
+      });
+    });
+
+    // Navigation
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const sectionId = item.dataset.section;
+        
+        // Update active nav item
+        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+        item.classList.add('active');
+        
+        // Show selected section
+        document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+        document.getElementById(sectionId).classList.add('active');
+      });
+    });
+
+    // Challenge Generation
+    document.getElementById('generate-btn').addEventListener('click', function() {
+      const branch = document.getElementById('branch-select').value;
+      const year = document.getElementById('year-select').value;
+      const skillLevel = document.getElementById('skill-select').value;
+      const btn = this;
+      
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading"></span> Generating Challenges...';
+      
+      // Simulate AI generation
+      setTimeout(() => {
+        const challenges = mockChallenges[skillLevel];
+        displayChallenges(challenges);
+        
+        btn.disabled = false;
+        btn.innerHTML = '<span>✨</span> Generate Challenges';
+        
+        // Update stats
+        state.industryReady = Math.min(state.industryReady + 2, 100);
+        document.getElementById('industry-ready').textContent = state.industryReady + '%';
+      }, 1500);
+    });
+
+    function displayChallenges(challenges) {
+      const container = document.getElementById('challenges-container');
+      const emptyState = document.getElementById('challenges-empty');
+      
+      container.innerHTML = challenges.map((challenge, idx) => `
+        <div class="challenge-card" data-challenge-idx="${idx}">
+          <div class="challenge-title">${challenge.title}</div>
+          <div class="challenge-description">${challenge.description}</div>
+          <div class="challenge-meta">
+            <span class="badge badge-${challenge.difficulty}">${challenge.difficulty}</span>
+            <span class="badge badge-language">${challenge.language}</span>
+          </div>
+          <div style="margin-top: 12px; font-size: 12px; color: var(--color-text-secondary);">
+            <strong>Input:</strong> ${challenge.expectedInput}<br>
+            <strong>Output:</strong> ${challenge.expectedOutput}
+          </div>
+        </div>
+      `).join('');
+      
+      container.style.display = 'grid';
+      emptyState.style.display = 'none';
+      
+      // Add click handlers
+      container.querySelectorAll('.challenge-card').forEach((card, idx) => {
+        card.addEventListener('click', () => {
+          const skillLevel = document.getElementById('skill-select').value;
+          selectChallenge(mockChallenges[skillLevel][idx]);
+        });
+      });
+    }
+
+    function selectChallenge(challenge) {
+      state.currentChallenge = challenge;
+      document.getElementById('current-challenge').textContent = challenge.title;
+      
+      // Switch to editor section
+      document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+      document.querySelector('[data-section="editor"]').classList.add('active');
+      document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+      document.getElementById('editor').classList.add('active');
+      
+      // Load starter code
+      if (state.editor && challenge.starterCode) {
+        state.editor.setValue(challenge.starterCode[state.currentLanguage] || challenge.starterCode.python);
+      }
+    }
+
+    // Language tabs
+    document.querySelectorAll('.editor-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        const language = this.dataset.language;
+        
+        document.querySelectorAll('.editor-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        
+        state.currentLanguage = language;
+        
+        if (state.editor) {
+          monaco.editor.setModelLanguage(state.editor.getModel(), language);
+          
+          if (state.currentChallenge && state.currentChallenge.starterCode) {
+            state.editor.setValue(state.currentChallenge.starterCode[language] || state.currentChallenge.starterCode.python);
+          }
+        }
+      });
+    });
+
+    // Run Code
+    document.getElementById('run-btn').addEventListener('click', function() {
+      const btn = this;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading"></span> Running...';
+      
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.innerHTML = '<span>▶️</span> Run Code';
+        alert('Code execution simulated! In a real environment, this would run your code and show the output.');
+      }, 1000);
+    });
+
+    // Submit Code
+    document.getElementById('submit-btn').addEventListener('click', function() {
+      const btn = this;
+      const code = state.editor ? state.editor.getValue() : '';
+      
+      if (!code.trim()) {
+        alert('Please write some code first!');
+        return;
+      }
+      
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading"></span> Analyzing...';
+      
+      setTimeout(() => {
+        displayAIFeedback(code);
+        
+        btn.disabled = false;
+        btn.innerHTML = '<span>✅</span> Submit for AI Review';
+        
+        // Update stats
+        state.challengesCompleted++;
+        document.getElementById('challenges-completed').textContent = state.challengesCompleted;
+        
+        if (state.challengesCompleted >= 5) {
+          state.skillLevel = 'Intermediate';
+        } else if (state.challengesCompleted >= 10) {
+          state.skillLevel = 'Advanced';
+        }
+        document.getElementById('skill-level').textContent = state.skillLevel;
+        
+        state.industryReady = Math.min(state.industryReady + 5, 100);
+        document.getElementById('industry-ready').textContent = state.industryReady + '%';
+      }, 2000);
+    });
+
+    function displayAIFeedback(code) {
+      const feedbackDiv = document.getElementById('ai-feedback');
+      
+      const feedbacks = [
+        {
+          title: "Excellent Work! 🎉",
+          content: `<p><strong>Code Analysis Complete</strong></p>
+            <p>Great job! Your code demonstrates solid understanding of the concepts. Here's my detailed feedback:</p>
+            <p><strong>✅ What You Did Well:</strong></p>
+            <ul>
+              <li>Clean and readable code structure</li>
+              <li>Proper use of functions and variables</li>
+              <li>Good naming conventions</li>
+              <li>Correct logic implementation</li>
+            </ul>
+            <p><strong>💡 Suggestions for Improvement:</strong></p>
+            <ul>
+              <li>Consider adding error handling for edge cases</li>
+              <li>Add comments to explain complex logic</li>
+              <li>Try optimizing the time complexity if possible</li>
+            </ul>
+            <p><strong>Alternative Approach:</strong></p>
+            <pre>// Here's another way to solve this:\n// Using a more Pythonic approach with list comprehension\nresult = [x for x in range(10) if x % 2 == 0]</pre>
+            <p><strong>🎓 Learning Tip:</strong> You're making excellent progress! This type of problem-solving thinking will make you industry-ready. Keep practicing and try the next challenge level!</p>`
+        },
+        {
+          title: "Good Attempt! Here's How to Fix It 🔧",
+          content: `<p><strong>Bug Identified</strong></p>
+            <p>I found a small issue in your code, but don't worry - this is a common mistake!</p>
+            <p><strong>🐛 The Problem:</strong></p>
+            <p>You're accessing the array at index <span class="highlight">i+1</span>, which skips the first element and will cause an error on the last iteration.</p>
+            <pre>// Your code:\nfor i in range(len(arr)):\n    total += arr[i+1]  // ⚠️ This goes out of bounds!</pre>
+            <p><strong>✅ The Fix:</strong></p>
+            <pre>// Corrected code:\nfor i in range(len(arr)):\n    total += arr[i]  // ✓ Now it works perfectly!</pre>
+            <p><strong>Why This Works:</strong></p>
+            <p>Python lists are 0-indexed, so <code>range(len(arr))</code> gives you 0, 1, 2, 3... If you use i+1, you're jumping one position ahead, which causes an IndexError on the last element.</p>
+            <p><strong>🌟 Encouragement:</strong> Every developer makes these mistakes while learning. The fact that you're debugging and learning means you're on the right track to becoming industry-ready!</p>`
+        },
+        {
+          title: "Great Logic! Let's Optimize 🚀",
+          content: `<p><strong>Performance Review</strong></p>
+            <p>Your code works correctly! Now let's make it even better by optimizing performance.</p>
+            <p><strong>✅ Current Approach (Works!):</strong></p>
+            <pre>// Time Complexity: O(n²)\nfor i in range(len(arr)):\n    for j in range(len(arr)):\n        if arr[i] == arr[j]:\n            count += 1</pre>
+            <p><strong>🚀 Optimized Approach:</strong></p>
+            <pre>// Time Complexity: O(n) - Much faster!\nfrom collections import Counter\ncounts = Counter(arr)\n// This uses a hash map internally for O(1) lookups</pre>
+            <p><strong>Why This Matters:</strong></p>
+            <p>In real-world applications with large datasets, optimization can mean the difference between a 10-second load time and instant results. Companies like Google and Amazon care deeply about this!</p>
+            <p><strong>🎯 Industry Insight:</strong> You're thinking about correctness first, then optimization - that's exactly the right approach! Keep building this problem-solving mindset.</p>`
+        }
+      ];
+      
+      const randomFeedback = feedbacks[Math.floor(Math.random() * feedbacks.length)];
+      
+      feedbackDiv.innerHTML = `
+        <div class="ai-response">
+          <div class="ai-response-header">
+            <span class="ai-response-icon">🤖</span>
+            <h4 class="ai-response-title">${randomFeedback.title}</h4>
+          </div>
+          <div class="ai-response-content">
+            ${randomFeedback.content}
+          </div>
+        </div>
+      `;
+      
+      feedbackDiv.style.display = 'block';
+      feedbackDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Voice Interface
+    document.getElementById('voice-btn').addEventListener('click', function() {
+      if (!state.isRecording) {
+        startRecording();
+      } else {
+        stopRecording();
+      }
+    });
+
+    document.getElementById('voice-stop-btn').addEventListener('click', function() {
+      stopRecording();
+    });
+
+    function startRecording() {
+      state.isRecording = true;
+      const btn = document.getElementById('voice-btn');
+      const stopBtn = document.getElementById('voice-stop-btn');
+      const status = document.getElementById('voice-status');
+      
+      btn.classList.add('recording');
+      stopBtn.style.display = 'inline-flex';
+      status.textContent = '🔴 Recording... Ask your coding question now!';
+      status.style.color = 'var(--color-red-500)';
+      
+      // Simulate recording for 5 seconds
+      setTimeout(() => {
+        if (state.isRecording) {
+          stopRecording();
+        }
+      }, 5000);
+    }
+
+    function stopRecording() {
+      state.isRecording = false;
+      const btn = document.getElementById('voice-btn');
+      const stopBtn = document.getElementById('voice-stop-btn');
+      const status = document.getElementById('voice-status');
+      
+      btn.classList.remove('recording');
+      stopBtn.style.display = 'none';
+      status.textContent = '🤖 Processing your question...';
+      status.style.color = 'var(--color-text-secondary)';
+      
+      // Simulate processing
+      setTimeout(() => {
+        const randomResponse = mockVoiceResponses[Math.floor(Math.random() * mockVoiceResponses.length)];
+        displayVoiceResponse(randomResponse);
+        status.textContent = 'Click the microphone to ask another question';
+      }, 2000);
+    }
+
+    function displayVoiceResponse(response) {
+      const responseDiv = document.getElementById('voice-response');
+      
+      responseDiv.innerHTML = `
+        <div class="ai-response">
+          <div class="ai-response-header">
+            <span class="ai-response-icon">🎙️</span>
+            <h4 class="ai-response-title">Voice Query Result</h4>
+          </div>
+          <div class="ai-response-content">
+            <p><strong>📝 Your Question (Transcribed):</strong></p>
+            <p style="font-style: italic; color: var(--color-text-secondary);">${response.question}</p>
+            <br>
+            <p><strong>🤖 AI Mentor's Answer:</strong></p>
+            ${response.answer}
+          </div>
+        </div>
+      `;
+      
+      responseDiv.style.display = 'block';
+      responseDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    // Progress Dashboard
+    function renderProgressDashboard() {
+      const container = document.getElementById('skills-container');
+      
+      container.innerHTML = mockSkills.map(skill => `
+        <div class="skill-item">
+          <div class="skill-header">
+            <span class="skill-name">${skill.name}</span>
+            <span class="skill-percentage">${skill.progress}%</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" style="width: ${skill.progress}%"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Project Templates
+    function renderProjects() {
+      const container = document.getElementById('projects-container');
+      
+      container.innerHTML = mockProjects.map((project, idx) => `
+        <div class="project-card" data-project-idx="${idx}">
+          <div class="project-header">
+            <h3 class="project-title">${project.name}</h3>
+            <p style="color: var(--color-text-secondary); font-size: 14px; margin-top: 8px;">${project.description}</p>
+          </div>
+          <div class="tech-stack">
+            ${project.techStack.map(tech => `<span class="tech-badge">${tech}</span>`).join('')}
+          </div>
+          <div class="project-meta">
+            <div style="margin-bottom: 4px;"><strong>Difficulty:</strong> <span class="badge badge-${project.difficulty.toLowerCase()}">${project.difficulty}</span></div>
+            <div><strong>Time Estimate:</strong> ${project.timeEstimate}</div>
+          </div>
+        </div>
+      `).join('');
+      
+      // Add click handlers
+      container.querySelectorAll('.project-card').forEach((card, idx) => {
+        card.addEventListener('click', () => {
+          showProjectDetails(mockProjects[idx]);
+        });
+      });
+    }
+
+    function showProjectDetails(project) {
+      const detailsDiv = document.getElementById('project-details');
+      
+      detailsDiv.innerHTML = `
+        <div class="card" style="margin-top: 24px;">
+          <div class="card-header">
+            <h3 class="card-title">📋 ${project.name} - Complete Guide</h3>
+          </div>
+          <div class="ai-response">
+            <div class="ai-response-header">
+              <span class="ai-response-icon">🚀</span>
+              <h4 class="ai-response-title">AI-Generated Project Specification</h4>
+            </div>
+            <div class="ai-response-content">
+              <p><strong>Project Overview:</strong></p>
+              <p>${project.description}</p>
+              
+              <p><strong>Technology Stack:</strong></p>
+              <div class="tech-stack">
+                ${project.techStack.map(tech => `<span class="tech-badge">${tech}</span>`).join('')}
+              </div>
+              
+              <p style="margin-top: 16px;"><strong>📝 Step-by-Step Implementation Guide:</strong></p>
+              
+              <p><strong>Step 1: Project Setup</strong></p>
+              <pre>mkdir ${project.name.toLowerCase().replace(/\s+/g, '-')}\ncd ${project.name.toLowerCase().replace(/\s+/g, '-')}\nnpm init -y</pre>
+              
+              <p><strong>Step 2: Install Dependencies</strong></p>
+              <pre>npm install ${project.techStack.slice(0, 3).join(' ').toLowerCase()}</pre>
+              
+              <p><strong>Step 3: Create Project Structure</strong></p>
+              <pre>mkdir src public\ntouch src/index.js src/app.js\ntouch public/index.html public/styles.css</pre>
+              
+              <p><strong>Step 4: Implement Core Features</strong></p>
+              <ul>
+                <li>Set up routing and navigation</li>
+                <li>Create UI components</li>
+                <li>Implement business logic</li>
+                <li>Add data persistence</li>
+                <li>Integrate APIs (if needed)</li>
+              </ul>
+              
+              <p><strong>Step 5: Testing & Debugging</strong></p>
+              <ul>
+                <li>Test all user flows</li>
+                <li>Fix bugs and edge cases</li>
+                <li>Optimize performance</li>
+              </ul>
+              
+              <p><strong>Step 6: Deployment</strong></p>
+              <pre>// Deploy to Vercel (Free)\nvercel deploy\n\n// Or deploy to Netlify\nnetlify deploy --prod</pre>
+              
+              <p><strong>🎯 Best Practices:</strong></p>
+              <ul>
+                <li>Use environment variables for API keys</li>
+                <li>Write clean, commented code</li>
+                <li>Follow naming conventions</li>
+                <li>Implement error handling</li>
+                <li>Make it mobile-responsive</li>
+              </ul>
+              
+              <p><strong>💼 Portfolio Tips:</strong></p>
+              <p>This project will look great on your resume! Make sure to:</p>
+              <ul>
+                <li>Deploy it live and share the URL</li>
+                <li>Document it well in a README</li>
+                <li>Add screenshots/demo video</li>
+                <li>Push code to GitHub with clear commits</li>
+              </ul>
+              
+              <p><strong>Estimated Completion Time:</strong> ${project.timeEstimate}</p>
+              <p><strong>Difficulty Level:</strong> ${project.difficulty}</p>
+              
+              <p style="margin-top: 16px; padding: 12px; background: rgba(16, 185, 129, 0.1); border-left: 4px solid var(--color-green-500); border-radius: 4px;">
+                <strong>🎓 Career Impact:</strong> Completing this project will significantly boost your portfolio and demonstrate ${project.difficulty.toLowerCase()} level skills to potential employers at companies like TCS, Infosys, and tech startups!
+              </p>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      detailsDiv.style.display = 'block';
+      detailsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Initialize on load
+    renderProgressDashboard();
+    renderProjects();
+  </script>
+</body>
+</html>
